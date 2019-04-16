@@ -17,3 +17,21 @@ The first line of the input contains one number: n (the width and height of the 
 
 If no solution has been found, then the first and only line of the output should be unsolvable. If a solution exists, then the output consists of n lines, representing the rows of some solution. Each line contains `n` integers `c1, ..., cn` separated by single spaces, representing the value of the cell in the corresponding position.
 
+## Example
+
+```bash
+$ cat inputs/1                           
+8
+1 2 5 2 5 2 6 1
+3 3 2 2 1 4 5 4
+
+$ cat inputs/1 | ./cargoes 
+0 0 1 0 0 0 0 0
+1 0 0 0 1 0 0 0
+0 0 0 0 0 0 5 0
+1 0 1 0 0 0 0 0
+1 0 0 0 0 4 0 0
+0 0 0 2 0 0 0 0
+0 3 0 0 0 0 0 3
+0 0 0 0 0 0 0 1
+```
