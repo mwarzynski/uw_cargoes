@@ -69,7 +69,7 @@ def main():
     solver = Solver()
     solver.add(And(constraints))
     if solver.check() == unsat:
-        print("unsolvable")
+        print("unsolvable", end="")
         return
     model = solver.model()
     for row in board:
