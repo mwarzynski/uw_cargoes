@@ -7,6 +7,8 @@ Consider the following assignment problem, called Cargoes: Let n be a parameter.
         a) Two cargoes cannot overlap.
         b) Two cargoes cannot touch diagonally.
 
+![Visualisation of the board](images/1.png)
+
 Your task is to solve a Cargo puzzle with the help of an SMT solver. Write a program that reads the description of a puzzle from standard input (in the format described below), translates the problem above to an instance of SMT, runs Z3 over it, and writes the result to the standard output (in the format described below).
 
 ### Input
