@@ -1,23 +1,36 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from itertools import product
 from z3 import And, Implies, Int, Solver, unsat
 
-def from_line():
-    return input().split(" ")
 
-def l_constraint(constraints, board, i, j, di, dj, ci, cj):
-    try:
-        constraints.append(Implies(
-            And(board[i][j] > 0, board[i+di][j+dj] > 0),
-            board[i+ci][j+cj] == 0
-        ))
-    except IndexError:
-        pass
+def main():
+    def from_line():
+        return input().split(" ")
+    # Parse input data.
+    n = int(input())
+    rows = list(map(int, from_line()))
+    cols = list(map(int, from_line()))
 
-def d_constraint(constraints, board, i, j):
-    for di in [-1, 1]:
-        for dj in [-1, 1]:
+    constraints = []
+    board = [
+        [Int(f"{r}_{c}") for c, _ in enumerate(cols)]
+        for r, _ in enumerate(rows)
+    ]
+    # 0. All values must be non-negative.
+    for vs in board:
+        for v in vs:
+            constraints.append(v >= 0)
+    # 1. Constraints for sum in each row.
+    for i, r in enumerate(rows):
+        constraints.append(sum(board[i]) == r)
+    # 2. Constraints for sum in each column.
+    for i, c in enumerate(cols):
+        constraints.append(sum([r[i] for r in board]) == c)
+    # 3. Cargos cannot touch diagonally (and therefore overlap).
+    for i, j in product(range(0, n), range(0, n)):
+        for di, dj in product([-1, 1], [-1, 1]):
             try:
                 constraints.append(Implies(
                     board[i][j] > 0,
@@ -25,46 +38,6 @@ def d_constraint(constraints, board, i, j):
                 ))
             except IndexError:
                 pass
-
-def main():
-    # Parse input data.
-    n = int(input())
-    rows = list(map(int, from_line()))
-    cols = list(map(int, from_line()))
-
-    constraints = []
-
-    # Create a board for the values.
-    board = [
-        [Int(f"{r}_{c}") for c, _ in enumerate(cols)]
-        for r, _ in enumerate(rows)
-    ]
-
-    # 0. All values must be non-negative.
-    for vs in board:
-        for v in vs:
-            constraints.append(v >= 0)
-
-    # 1. Constraints for sum in each row.
-    for i, r in enumerate(rows):
-        constraints.append(sum(board[i]) == r)
-
-    # 2. Constraints for sum in each column.
-    for i, c in enumerate(cols):
-        constraints.append(sum([r[i] for r in board]) == c)
-
-    # 3.1. Cargos cannot overlap.
-    for i in range(0, n):
-        for j in range(0, n):
-            l_constraint(constraints, board, i, j, 1, 0, 0, 1)
-            l_constraint(constraints, board, i, j, 1, 0, 0, -1)
-            l_constraint(constraints, board, i, j, 0, 1, 1, 0)
-            l_constraint(constraints, board, i, j, 0, 1, -1, 0)
-            l_constraint(constraints, board, i, j, -1, 0, 0, 1)
-            l_constraint(constraints, board, i, j, -1, 0, 0, -1)
-            l_constraint(constraints, board, i, j, 0, -1, 1, 0)
-            l_constraint(constraints, board, i, j, 0, -1, -1, 0)
-            d_constraint(constraints, board, i, j)
 
     solver = Solver()
     solver.add(And(constraints))
@@ -74,6 +47,7 @@ def main():
     model = solver.model()
     for row in board:
         print(" ".join([str(model[v]) for v in row]))
+
 
 if __name__ == "__main__":
     main()
