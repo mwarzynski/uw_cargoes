@@ -7,7 +7,7 @@ from z3 import And, Implies, Int, Solver, unsat
 
 def main():
     def from_line():
-        return input().split(" ")
+        return input().split()
     # Parse input data.
     n = int(input())
     rows = list(map(int, from_line()))
